@@ -49,7 +49,9 @@ def ProcessBuffer(buffer_):
             buffer_ = buffer_[len(msg.getPayload()) + 4:]
             messages.append(msg)
         except MessageError, e:
-            if e.internal == "CHECKSUM":
+            # if there is a checksum problem or you receive the startup message
+            # discard the msg
+            if e.internal == "CHECKSUM" or len(buffer_) > 4:
                 buffer_ = buffer_[ord(buffer_[1]) + 4:]
             else:
                 break
